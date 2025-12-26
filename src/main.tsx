@@ -4,11 +4,14 @@ import './index.css'
 import App from './App.tsx'
 import { BrowserRouter } from 'react-router-dom'
 import { AppProvider } from './context/AppContext.tsx'
+import {MotionConfig} from 'motion/react'
 
 createRoot(document.getElementById('root')!).render(
   <BrowserRouter>
     <AppProvider>
-      <App />
+      <MotionConfig viewport={{once: true}}>
+        <App />
+      </MotionConfig>
     </AppProvider>
   </BrowserRouter>,
 )
