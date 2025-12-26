@@ -75,7 +75,32 @@ const ManageBookings = () => {
                   <span className='bg-gray-100 px-3 py-1 rounded-full text-xs'>offline</span>
                 </td>
 
-                <td className='p-3'>
+                <td className="p-3">
+                  {booking.status?.[0] === 'PENDING' ? (
+                    <select
+                      onChange={e => changeBookingStatus(booking._id, e.target.value)}
+                      value={booking.status?.[0]}
+                      className="px-2 py-1.5 mt-1 text-gray-500 border border-borderColor rounded-md outline-none"
+                    >
+                      <option value="PENDING">Pending</option>
+                      <option value="CANCELLED">Cancelled</option>
+                      <option value="CONFIRMED">Confirmed</option>
+                    </select>
+                  ) : (
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                        booking.status?.[0] === 'CONFIRMED'
+                          ? 'bg-green-100 text-green-500'
+                          : 'bg-red-100 text-red-500'
+                      }`}
+                    >
+                      {booking.status?.[0].toLowerCase()}
+                    </span>
+                  )}
+                </td>
+
+
+                {/* <td className='p-3'>
                   {booking.status === 'pending' ? (
                     <select onChange={e => changeBookingStatus(booking._id, e.target.value)} value={booking.status} className='px-2 py-1.5 mt-1 text-gray-500 border
                     border-borderColor rounded-md outline-none'>
@@ -86,7 +111,7 @@ const ManageBookings = () => {
                   ) : (
                     <span className={`px-3 py-1 rounded-full text-xs font-semibold ${booking.status === 'confirmed' ?  'bg-green-100 text-green-500' : 'bg-red-100 text-red-500'}`}>{booking.status}</span>
                   )}
-                </td>
+                </td> */}
 
               </tr>
             ))}

@@ -1,19 +1,31 @@
 import React, { useEffect, useState } from 'react'
-import { assets, dummyMyBookingsData } from '../assets/assets'
+import { assets } from '../assets/assets'
 import Title from '../components/Title'
+import { useAppContext } from '../context/AppContext'
+import toast from 'react-hot-toast'
 
 function MyBookings() {
 
+  const {axios, user, currency } = useAppContext()
+
   const [bookings, setBookings] = useState([])
-  const currency = import.meta.env.VITE_CURRENCY
 
   const fetchMyBookings = async ()=>{
-    setBookings(dummyMyBookingsData)
+    try {
+      const {data} = await axios.get('/api/v1/bookings/user')
+      if (data.success){
+        setBookings(data.bookings)
+      }else{
+        toast.error(data.message)
+      }
+    } catch (error) {
+        toast.error(error.message)
+    }
   }
 
   useEffect(() => {
-    fetchMyBookings()
-  },[])
+    user && fetchMyBookings()
+  },[user])
 
   return (
     <div className='px-6 md:px-16 lg:px-24 xl:px-32 2xl:px-48 mt-16 text-sm max-w-7xl'>
@@ -41,7 +53,7 @@ function MyBookings() {
             <div className='md:col-span-2'>
               <div className='flex items-center gap-2'>
                 <p className='px-3 py-1.5 bg-light rounded'>Booking #{index+1}</p>
-                <p className={`px-3 py-1 text-xs rounded-full ${booking.status === 'confirmed' ? 'bg-green-400/15 text-green-600' : 'bg-red-400/15 text-red-600'}`}>{booking.status}</p>
+                <p className={`px-3 py-1 text-xs rounded-full ${booking.status.includes('CONFIRMED') ? 'bg-green-400/15 text-green-600' : 'bg-red-400/15 text-red-600'}`}>{booking.status}</p>
               </div>
 
               <div className='flex items-start gap-2 mt-3'>
