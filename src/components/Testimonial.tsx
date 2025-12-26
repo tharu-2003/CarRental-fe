@@ -1,6 +1,8 @@
 import React from 'react'
 import Title from './Title'
 import { assets } from '../assets/assets';
+import {motion} from 'motion/react'
+
 
 const Testimonial = () => {
 
@@ -29,12 +31,24 @@ const Testimonial = () => {
   return (
     <div className="py-28 px-6 md:px-16 lg:px-24 xl:px-44">
             
-            <Title title='What Our Customers Say' subTitle='Discover why discerning
-            travelers choose StayVenture for theri luxury accommodations around the world' />
+            <motion.div
+                initial={{y: 20, opacity: 0}}
+                whileInView={{ opacity: 1, y: 0}}
+                transition={{ duration: 1, delay: 0.3}}
+            >
+                <Title title='What Our Customers Say' subTitle='Discover why discerning
+                travelers choose StayVenture for theri luxury accommodations around the world' />
+            </motion.div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-18">
+                
                 {testimonials.map((testimonial, index) => (
-                    <div key={index} className="bg-white p-6 rounded-xl shadow-lg 
+                    <motion.div 
+                        initial={{y: 40, opacity: 0}}
+                        whileInView={{ opacity: 1, y: 0}}
+                        transition={{ duration: 0.6, delay: index * 0.2, ease: 'easeOut'}}
+                        viewport={{ once: true, amount: 0.3 }}
+                    key={index} className="bg-white p-6 rounded-xl shadow-lg 
                     hover:-translate-y-1 transition-all duration-500">
 
                         <div className="flex items-center gap-3">
@@ -50,7 +64,7 @@ const Testimonial = () => {
                             ))}
                         </div>
                         <p className="text-gray-500 max-w-90 mt-4 font-light">"{testimonial.testimonial}"</p>
-                    </div>
+                    </motion.div>
                 ))}
             </div>
         </div>
