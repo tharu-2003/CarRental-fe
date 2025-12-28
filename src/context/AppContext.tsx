@@ -12,7 +12,7 @@ export const AppProvider = ({ children }) => {
     const navigate = useNavigate()
     const currency = import.meta.env.VITE_CURRENCY
 
-    const [token, setToken] = useState(null)
+    const [accessToken, setAccessToken] = useState(null)
     const [user, setUser] = useState(null)
     const [isOwner, setIsOwner] = useState(false)
     const [showLogin, setShowLogin] = useState(false)
@@ -48,34 +48,43 @@ export const AppProvider = ({ children }) => {
 
     // Function to log out the user
     const logout = () => {
-        localStorage.removeItem('token')
-        setToken(null)
+        localStorage.removeItem('accessToken')
+        setAccessToken(null)
         setUser(null)
         setIsOwner(false)
-        axios.defaults.headers.common['Authorization'] = ''
+
+        // axios.defaults.headers.common['Authorization'] = ''
+        delete axios.defaults.headers.common["Authorization"];
+
+
         navigate('/')
         toast.success('You have been logged out')
     }
 
-    // useEffect to retrieve the token from localStorage
+    // useEffect to retrieve the accessToken from localStorage
     useEffect(() => {
-        const token = localStorage.getItem('token')
-        setToken(token)
+        const savedAccessToken = localStorage.getItem('accessToken')
+        setAccessToken(savedAccessToken)
+
+        if (accessToken) {
+            axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
+        }
         fetchCars()
     },[])
 
-    // useEffect to fetch user data when token is available
+    // useEffect to fetch user data when accessToken is available
     useEffect(() => {
-        if(token){
-            axios.defaults.headers.common['Authorization'] = `${token}`
+        if(accessToken){
+            // axios.defaults.headers.common['Authorization'] = `${accessToken}`
+            axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`
             fetchUser()
         }
         
-    },[token])
+    },[accessToken])
 
     const value = {
         navigate, currency, axios, user, setUser, 
-        token, setToken, isOwner, setIsOwner, fetchUser, 
+        accessToken, setAccessToken, isOwner, setIsOwner, fetchUser, 
         showLogin, setShowLogin, logout, fetchCars, cars, setCars,
         pickupDate, setPickupDate, returnDate, setReturnDate
     }
