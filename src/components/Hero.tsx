@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import  { useState } from 'react'
 import { assets, cityList } from '../assets/assets'
 import { useAppContext } from '../context/AppContext'
 import {motion, scale} from 'motion/react'
@@ -9,7 +9,7 @@ const Hero = () => {
 
     const {pickupDate, setPickupDate, returnDate, setReturnDate, navigate} = useAppContext()
 
-    const handleSearch = (e) => {
+    const handleSearch = (e: any) => {
       e.preventDefault()
       navigate('/cars?pickupLocation=' + pickupLocation + '&pickupDate=' + pickupDate + '&returnDate=' + returnDate)
     }

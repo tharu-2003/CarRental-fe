@@ -11,7 +11,7 @@ const Login = () => {
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
 
-    const onSubmitHandler = async (event) => {
+    const onSubmitHandler = async (event: any) => {
         try {
             event.preventDefault();
             const {data} = await axios.post(`/api/v1/user/${state}`, {name, email, password})
@@ -25,7 +25,7 @@ const Login = () => {
                 toast.error(data.message)
             }
 
-        } catch (error) {
+        } catch (error: any) {
             toast.error(error.message)
         }
     }
