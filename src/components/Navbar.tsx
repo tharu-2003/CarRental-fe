@@ -9,7 +9,7 @@ import { changeRoleToOwner } from '../services/owner'
 
 const Navbar = () => {
 
-    const {setShowLogin, user, logout, isOwner, axios, setIsOwner} = useAppContext()
+    const {setShowLogin, user, logout, isOwner, setIsOwner} = useAppContext()
 
     const location = useLocation()
     const [open, setOpen] = useState(false);
