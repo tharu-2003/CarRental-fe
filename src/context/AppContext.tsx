@@ -105,6 +105,14 @@ import axios from "axios";
 import { toast } from 'react-hot-toast';
 import { useNavigate } from "react-router-dom";
 
+
+import api from "../services/api";             
+import { getCars, getUser } from "../services/user";
+
+
+
+
+
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
 
 // ----- Frontend interfaces -----
@@ -153,23 +161,28 @@ interface IAppContext {
 const AppContext = createContext<IAppContext | undefined>(undefined);
 
 export const AppProvider = ({ children }: { children: React.ReactNode }) => {
+
   const navigate = useNavigate();
   const currency = import.meta.env.VITE_CURRENCY;
 
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [user, setUser] = useState<IUser | null>(null);
   const [isOwner, setIsOwner] = useState<boolean>(false);
-  const [showLogin, setShowLogin] = useState<boolean>(false);
+  const [cars, setCars] = useState<ICar[]>([]);
+
   const [pickupDate, setPickupDate] = useState<string>("");
   const [returnDate, setReturnDate] = useState<string>("");
-  const [cars, setCars] = useState<ICar[]>([]);
+
+  const [showLogin, setShowLogin] = useState<boolean>(false);
 
   const fetchUser = async () => {
     try {
       const { data } = await axios.get('/api/v1/user/data');
-      if (data.success) {
+      // const data = await getUser();
+      if (data?.success) {
         setUser(data.user);
-        setIsOwner(data.user.role[0] === 'OWNER');
+        setIsOwner(data.user.role.includes("OWNER"));
+        // setIsOwner(data.user.role[0] === 'OWNER');
       } else {
         navigate('/');
       }
@@ -178,32 +191,44 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  // ----------------- FETCH CARS -----------------
   const fetchCars = async () => {
     try {
       const { data } = await axios.get('/api/v1/user/cars');
-      if (data.success) setCars(data.cars);
-      else toast.error(data.message);
-    } catch (error: any) {
-      toast.error(error.message);
+      // const data = await getCars();
+      if(data?.success){
+        setCars(data.cars);
+      }else{
+        toast.error(data.message);
+      }
+    } catch (err:any) {
+      toast.error(err?.message || "Failed to load cars");
     }
   };
 
+  // ----------------- LOGOUT -----------------
   const logout = () => {
-    localStorage.removeItem('accessToken');
-    setAccessToken(null);
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+
     setUser(null);
     setIsOwner(false);
+    setAccessToken(null);
     delete axios.defaults.headers.common["Authorization"];
-    navigate('/');
-    toast.success('You have been logged out');
+
+    toast.success("Logged out successfully");
+    navigate("/");
   };
 
+  // ----------------- ON APP LOAD -----------------
   useEffect(() => {
     const savedAccessToken = localStorage.getItem('accessToken');
     setAccessToken(savedAccessToken);
 
     if (savedAccessToken) {
       axios.defaults.headers.common["Authorization"] = `Bearer ${savedAccessToken}`;
+      // api.defaults.headers.common["Authorization"] = `Bearer ${savedAccessToken}`;
+      fetchUser();
     }
 
     fetchCars();

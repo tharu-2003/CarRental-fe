@@ -1,8 +1,9 @@
 import React from 'react'
 import { useAppContext } from '../context/AppContext';
 import toast from 'react-hot-toast';
+import { login, register } from '../services/user';
 
-const Login = () => {
+const Login: React.FC = () => {
 
     const {setShowLogin, axios, setAccessToken, navigate} = useAppContext()
 
@@ -14,16 +15,46 @@ const Login = () => {
     const onSubmitHandler = async (event: any) => {
         try {
             event.preventDefault();
-            const {data} = await axios.post(`/api/v1/user/${state}`, {name, email, password})
+            // const {data} = await axios.post(`/api/v1/user/${state}`, {name, email, password})
 
-            if (data.success) {
-                navigate('/')
-                setAccessToken(data.accessToken)
-                localStorage.setItem('accessToken', data.accessToken)
-                setShowLogin(false)
+
+            if( state === "register"){
+                
+                const data = await register(name, email, password)
+
+                if (data.success) {
+                    navigate('/')
+                    // setAccessToken(data.accessToken)
+                    localStorage.setItem('accessToken', data.accessToken)
+                    localStorage.setItem('refreshToken', data.refreshToken)
+                    setShowLogin(false)
+                }else{
+                    toast.error(data.message)
+                }
             }else{
-                toast.error(data.message)
+                const data = await login(email, password)
+
+                if (data.success) {
+                    setAccessToken(data.accessToken)
+                    localStorage.setItem('accessToken', data.accessToken)
+                    localStorage.setItem('refreshToken', data.refreshToken)
+                    setShowLogin(false)
+                    navigate('/')
+                }else{
+                    toast.error(data.message)
+                }
             }
+
+            // if (data.success) {
+            //     navigate('/')
+            //     setAccessToken(data.accessToken)
+            //     localStorage.setItem('accessToken', data.accessToken)
+            //     localStorage.setItem("refreshToken", data.refreshToken)
+
+            //     setShowLogin(false)
+            // }else{
+            //     toast.error(data.message)
+            // }
 
         } catch (error: any) {
             toast.error(error.message)

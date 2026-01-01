@@ -109,6 +109,7 @@ import Title from '../components/Title';
 import { useAppContext } from '../context/AppContext';
 import toast from 'react-hot-toast';
 import { motion } from 'motion/react';
+import { getUserBookings } from '../services/bookings';
 
 // Frontend Car type
 interface Car {
@@ -142,6 +143,9 @@ function MyBookings() {
       const { data } = await axios.get<{ success: boolean; bookings: Booking[]; message?: string }>(
         '/api/v1/bookings/user'
       );
+
+      // const {data} = await getUserBookings()
+
       if (data.success) {
         setBookings(data.bookings);
       } else {
