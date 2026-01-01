@@ -5,7 +5,7 @@ import { login, register } from '../services/user';
 
 const Login: React.FC = () => {
 
-    const {setShowLogin, axios, setAccessToken, navigate} = useAppContext()
+    const {setShowLogin, setAccessToken, navigate} = useAppContext()
 
     const [state, setState] = React.useState("login");
     const [name, setName] = React.useState("");
@@ -44,17 +44,6 @@ const Login: React.FC = () => {
                     toast.error(data.message)
                 }
             }
-
-            // if (data.success) {
-            //     navigate('/')
-            //     setAccessToken(data.accessToken)
-            //     localStorage.setItem('accessToken', data.accessToken)
-            //     localStorage.setItem("refreshToken", data.refreshToken)
-
-            //     setShowLogin(false)
-            // }else{
-            //     toast.error(data.message)
-            // }
 
         } catch (error: any) {
             toast.error(error.message)
