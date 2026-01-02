@@ -5,7 +5,7 @@ const api = axios.create({
   baseURL: "http://localhost:5000/api/v1"
 });
 
-const PUBLIC_ENDPOINT = ["/user/login", "/user/register", "/user/cars"];
+const PUBLIC_ENDPOINT = ["/user/login", "/user/register", "/user/refresh", "/user/cars"];
 
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("accessToken");
@@ -13,7 +13,6 @@ api.interceptors.request.use((config) => {
   const isPublic = PUBLIC_ENDPOINT.some((url) => config.url?.includes(url));
   
   if (!isPublic && token) {
-    console.log("bbbbbbbbbbbbbbbbbbbbbb")
     config.headers.Authorization = `Bearer ${token}`;
   }
 
@@ -25,19 +24,18 @@ api.interceptors.response.use(
     return response;
   },
   async (error: AxiosError) => {
-    console.log("cccccccccccccccccccc")
 
     const originalRequest: any = error.config;
 
     if (
-      error.response?.status === 401 &&
+      (error.response?.status === 401 || error.response?.status === 403) &&
       !PUBLIC_ENDPOINT.some((url) => originalRequest.url?.includes(url)) &&
       !originalRequest._retry
     ) {
       originalRequest._retry = true;
-
       try {
         const refreshToken = localStorage.getItem("refreshToken");
+
         if (!refreshToken) {
           throw new Error("No refresh token available");
         }

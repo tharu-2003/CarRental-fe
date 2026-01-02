@@ -66,6 +66,10 @@ const AddCar: React.FC = () => {
           location: '',
           description: '',
         })
+
+        setTimeout(() => {
+          window.location.reload()
+        }, 1200)
       } else {
         toast.error(data.message)
       }
