@@ -222,11 +222,17 @@ const AddCar: React.FC = () => {
             onChange={(e) => setCar({ ...car, location: e.target.value })}
             className='px-3 py-2 mt-1 border border-borderColor rounded-md outline-none'
           >
-            <option value=''>Select a location</option>
-            <option value='New York'>New York</option>
-            <option value='Los Angeles'>Los Angeles</option>
-            <option value='Houston'>Houston</option>
-            <option value='Chicago'>Chicago</option>
+            <option value="">Select a province</option>
+            <option value="Western">Western</option>
+            <option value="Central">Central</option>
+            <option value="Southern">Southern</option>
+            <option value="Northern">Northern</option>
+            <option value="Eastern">Eastern</option>
+            <option value="North Western">North Western</option>
+            <option value="North Central">North Central</option>
+            <option value="Uva">Uva</option>
+            <option value="Sabaragamuwa">Sabaragamuwa</option>
+
           </select>
         </div>
 

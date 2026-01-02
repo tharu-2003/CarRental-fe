@@ -5,17 +5,9 @@ import { useAppContext } from './context/AppContext';
 import Footer from './components/Footer';
 import Layout from './pages/owner/Layout';
 
-import  { lazy, Suspense, type ReactNode } from 'react'
+import  { lazy, Suspense } from 'react'
 
-// import Home from './pages/Home';
-// import CarDetails from './pages/CarDetails';
-// import Cars from './pages/Cars';
-// import MyBookings from './pages/MyBookings';
-// import Dashboard from './pages/owner/Dashboard';
-// import AddCar from './pages/owner/AddCar';
-// import ManageCars from './pages/owner/ManageCars';
-// import ManageBookings from './pages/owner/ManageBookings';
-// import Login from './pages/Login';
+
 const Home = lazy(() => import("./pages/Home"));
 const CarDetails = lazy(() => import("./pages/CarDetails"));
 const Cars = lazy(() => import("./pages/Cars"));
