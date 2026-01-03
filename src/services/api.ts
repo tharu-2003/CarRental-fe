@@ -1,9 +1,14 @@
 import axios, {  AxiosError } from "axios";
 import { refreshTokens } from './user'
+import.meta.env
+
+
+
 
 const api = axios.create({
-  baseURL: "http://localhost:5000/api/v1"
+  baseURL:` ${import.meta.env.VITE_BASE_URL}/api/v1`
 });
+
 
 const PUBLIC_ENDPOINT = ["/user/login", "/user/register", "/user/refresh", "/user/cars", "/user/forget-password"];
 
