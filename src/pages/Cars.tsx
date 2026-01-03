@@ -1,76 +1,83 @@
 import { useEffect, useState } from 'react'
 import Title from '../components/Title'
-import { assets } from '../assets/assets'
+import { assets, type Car } from '../assets/assets'
 import CarCard from '../components/CarCard'
 import { useSearchParams } from 'react-router-dom'
-import { useAppContext } from '../context/AppContext'
 import toast from 'react-hot-toast'
 import { motion } from 'motion/react'
 import { checkAvailabilityofCar } from '../services/bookings'
+import { getCars } from '../services/user'
 
-// --------- Define ICar interface ---------
-export interface ICar {
-  _id: string
-  owner: string
-  brand: string
-  model: string
-  image: string
-  year: number
-  category: string
-  seating_capacity: number
-  fuel_type: string
-  transmission: string
-  pricePerDay: number
-  location: string
-  description: string
-  isAvailable: boolean
-}
-
-// --------- Cars Component ---------
 function Cars() {
   const [searchParams] = useSearchParams()
   const pickupLocation = searchParams.get('pickupLocation')
   const pickupDate = searchParams.get('pickupDate')
   const returnDate = searchParams.get('returnDate')
 
-  const { cars: allCars } = useAppContext()
-  const cars: ICar[] = allCars as ICar[] // Ensure TypeScript knows these are ICar[]
-
-  const [input, setInput] = useState('')
-  const [filteredCars, setFilteredCars] = useState<ICar[]>([])
   const isSearchData = pickupLocation && pickupDate && returnDate
 
-  // Local filter by input
+  const [input, setInput] = useState('')
+  const [cars, setCars] = useState<Car[]>([])
+  const [filteredCars, setFilteredCars] = useState<Car[]>([])
+
+  const [page, setPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
+  const LIMIT = 6 // Cars per page
+
+  // ---------------- Fetch Cars ----------------
+  const fetchCars = async () => {
+    try {
+      const data = await getCars(page, LIMIT)
+      if (data.success) {
+        setCars(data.cars)
+        setTotalPages(data.pagination.totalPages)
+        if (!isSearchData) setFilteredCars(data.cars)
+      } else {
+        toast.error(data.message)
+      }
+    } catch (error: any) {
+      toast.error(error.message)
+    }
+  }
+
+  useEffect(() => {
+    fetchCars()
+  }, [page]) // refetch when page changes
+
+  // ---------------- Search/Filter ----------------
   const applyFilter = () => {
     if (input === '') {
       setFilteredCars(cars)
       return
     }
 
-    const filtered = cars.filter((car) =>
-      car.brand.toLowerCase().includes(input.toLowerCase()) ||
-      car.model.toLowerCase().includes(input.toLowerCase()) ||
-      car.category.toLowerCase().includes(input.toLowerCase()) ||
-      car.transmission.toLowerCase().includes(input.toLowerCase())
+    const filtered = cars.filter(
+      car =>
+        car.brand.toLowerCase().includes(input.toLowerCase()) ||
+        car.model.toLowerCase().includes(input.toLowerCase()) ||
+        car.category.toLowerCase().includes(input.toLowerCase()) ||
+        car.transmission.toLowerCase().includes(input.toLowerCase())
     )
     setFilteredCars(filtered)
   }
 
-  // Fetch available cars from API
+  useEffect(() => {
+    if (!isSearchData) applyFilter()
+  }, [input, cars])
+
+  // ---------------- Availability Search ----------------
   const searchCarAvailability = async () => {
     if (!pickupLocation || !pickupDate || !returnDate) return
     try {
-      // const { data } = await axios.post('/api/v1/bookings/check-availability', {
-      //   location: pickupLocation,
-      //   pickupDate,
-      //   returnDate
-      // })
-    const data = await checkAvailabilityofCar( pickupLocation, pickupDate, returnDate)
-
+      const data = await checkAvailabilityofCar(
+        pickupLocation,
+        pickupDate,
+        returnDate
+      )
 
       if (data.success) {
-        setFilteredCars(data.availableCars as ICar[])
-        if ((data.availableCars as ICar[]).length === 0) {
+        setFilteredCars(data.availableCars as Car[])
+        if ((data.availableCars as Car[]).length === 0) {
           toast('No cars available')
         }
       }
@@ -81,14 +88,11 @@ function Cars() {
 
   useEffect(() => {
     if (isSearchData) searchCarAvailability()
-  }, [])
-
-  useEffect(() => {
-    if (cars.length > 0 && !isSearchData) applyFilter()
-  }, [input, cars])
+  }, [isSearchData])
 
   return (
     <div>
+      {/* --------- Header & Search --------- */}
       <motion.div
         initial={{ y: 30, opacity: 0 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -118,6 +122,7 @@ function Cars() {
         </motion.div>
       </motion.div>
 
+      {/* --------- Cars Grid --------- */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -131,15 +136,40 @@ function Cars() {
         <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-4 xl:px-20 max-w-7xl mx-auto'>
           {filteredCars.map((car, index) => (
             <motion.div
+              key={car._id}
               initial={{ y: 20, opacity: 0 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.1 * index }}
-              key={car._id}
             >
               <CarCard car={car} />
             </motion.div>
           ))}
         </div>
+
+        {/* --------- Pagination --------- */}
+        {!isSearchData && (
+          <div className='flex items-center justify-center gap-6 mt-10'>
+            <button
+              disabled={page === 1}
+              onClick={() => setPage(prev => prev - 1)}
+              className='px-4 py-2 border rounded disabled:opacity-50'
+            >
+              Previous
+            </button>
+
+            <span className='text-sm'>
+              Page {page} of {totalPages}
+            </span>
+
+            <button
+              disabled={page === totalPages}
+              onClick={() => setPage(prev => prev + 1)}
+              className='px-4 py-2 border rounded disabled:opacity-50'
+            >
+              Next
+            </button>
+          </div>
+        )}
       </motion.div>
     </div>
   )

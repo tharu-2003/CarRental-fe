@@ -10,10 +10,15 @@ export const register = async ( name: string , email:string, password:string ) =
     return resp.data
 }
 
-export const getCars = async () => {
-    const resp = await api.get("/user/cars");
-    return resp.data;
+// export const getCars = async () => {
+//     const resp = await api.get("/user/cars");
+//     return resp.data;
+// }
+export const getCars = async (page = 1, limit = 6) => {
+  const resp = await api.get(`/user/cars?page=${page}&limit=${limit}`)
+  return resp.data
 }
+
 
 export const getUser = async () => {
     const resp = await api.get("/user/data");

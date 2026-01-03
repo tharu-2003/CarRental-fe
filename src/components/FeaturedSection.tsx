@@ -1,14 +1,39 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'motion/react'
 import Title from './Title'
 import CarCard from './CarCard'
-import { useAppContext } from '../context/AppContext'
 import { assets, type Car } from '../assets/assets'
+import { getCars } from '../services/user'
+import toast from 'react-hot-toast'
 
 const FeaturedSection: React.FC = () => {
   const navigate = useNavigate()
-  const { cars } = useAppContext()
+
+  const [cars, setCars] = useState<Car[]>([])
+  const [page, setPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
+
+  const LIMIT = 3
+
+  const fetchCars = async () => {
+    try {
+      const data = await getCars(page, LIMIT)
+
+      if (data.success) {
+        setCars(data.cars)
+        setTotalPages(data.pagination.totalPages)
+      } else {
+        toast.error(data.message)
+      }
+    } catch (error: any) {
+      toast.error(error.message)
+    }
+  }
+
+  useEffect(() => {
+    fetchCars()
+  }, [page])
 
   return (
     <motion.div
@@ -29,14 +54,14 @@ const FeaturedSection: React.FC = () => {
         />
       </motion.div>
 
-      {/* Featured Cars Grid */}
+      {/* Cars Grid */}
       <motion.div
         initial={{ y: 100, opacity: 0 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 1, delay: 0.5 }}
         className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-18"
       >
-        {(cars as Car[]).slice(0, 6).map((car: Car) => (
+        {cars.map((car) => (
           <motion.div
             key={car._id}
             initial={{ opacity: 0, scale: 0.95 }}
@@ -48,7 +73,30 @@ const FeaturedSection: React.FC = () => {
         ))}
       </motion.div>
 
-      {/* Explore All Cars Button */}
+      {/* Pagination */}
+      <div className="flex items-center gap-6 mt-14">
+        <button
+          disabled={page === 1}
+          onClick={() => setPage(prev => prev - 1)}
+          className="px-4 py-2 border rounded disabled:opacity-50"
+        >
+          Previous
+        </button>
+
+        <span className="text-sm">
+          Page {page} of {totalPages}
+        </span>
+
+        <button
+          disabled={page === totalPages}
+          onClick={() => setPage(prev => prev + 1)}
+          className="px-4 py-2 border rounded disabled:opacity-50"
+        >
+          Next
+        </button>
+      </div>
+
+      {/* Explore All Cars */}
       <motion.button
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
