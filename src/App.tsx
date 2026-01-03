@@ -17,6 +17,7 @@ const AddCar = lazy(() => import("./pages/owner/AddCar"));
 const ManageCars = lazy(() => import("./pages/owner/ManageCars"));
 const ManageBookings = lazy(() => import("./pages/owner/ManageBookings"));
 const Login = lazy(() => import("./pages/Login"));
+const ResetPassword = lazy(() => import("./pages/ResetPassword"))
 
 const App = () => {
 
@@ -42,6 +43,7 @@ const App = () => {
                 <Route path='manage-cars' element={<ManageCars />}/>
                 <Route path='manage-bookings' element={<ManageBookings />}/>
             </Route>
+            <Route path='/reset-password/:token' element={<ResetPassword />} />
         </Routes>
       </Suspense>
 

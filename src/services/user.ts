@@ -24,3 +24,16 @@ export const refreshTokens = async (refreshToken: string) => {
     const res = await api.post("/user/refresh", {token:refreshToken})
     return res.data
 }
+
+export const sendPasswordResetEmail = async (email: string) => {
+    const resp = await api.post("/user/forget-password" , {email});
+    return resp.data
+}
+
+export const resetPassword = async (token: string, newPassword: string) => {
+    const resp = await api.put(`/user/reset-password`,
+        { newPassword },
+        { headers: { "x-reset-token": token } }
+    );
+    return resp.data;
+};

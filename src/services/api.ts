@@ -5,7 +5,7 @@ const api = axios.create({
   baseURL: "http://localhost:5000/api/v1"
 });
 
-const PUBLIC_ENDPOINT = ["/user/login", "/user/register", "/user/refresh", "/user/cars"];
+const PUBLIC_ENDPOINT = ["/user/login", "/user/register", "/user/refresh", "/user/cars", "/user/forget-password"];
 
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("accessToken");

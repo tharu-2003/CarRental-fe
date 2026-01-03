@@ -1,7 +1,7 @@
 import React from 'react'
 import { useAppContext } from '../context/AppContext'
 import toast from 'react-hot-toast'
-import { login, register } from '../services/user'
+import { login, register, sendPasswordResetEmail } from '../services/user'
 import { motion, AnimatePresence } from 'motion/react'
 
 const Login: React.FC = () => {
@@ -14,22 +14,12 @@ const Login: React.FC = () => {
     const [showPassword, setShowPassword] = React.useState(false)
     const [isLoading, setIsLoading] = React.useState(false)
 
+    // const [message , setMessage] = useState("");
+
     const onSubmitHandler = async (event: any) => {
         try {
             event.preventDefault()
             setIsLoading(true)
-
-            if (state === 'forgot-password') {
-                // TODO: Implement forgot password API call
-                // const data = await forgotPassword(email)
-                
-                // Simulated API call
-                await new Promise(resolve => setTimeout(resolve, 1500))
-                toast.success('Password reset link sent to your email!')
-                setState('login')
-                setEmail('')
-                return
-            }
 
             if (state === 'register') {
                 const data = await register(name, email, password)
@@ -44,7 +34,41 @@ const Login: React.FC = () => {
                 } else {
                     toast.error(data.message)
                 }
-            } else {
+            }else if (state ==  "forgot-password"){
+                 event.preventDefault()
+    
+                if (!email) {
+                    toast.error('Please enter your email address.')
+                    return
+                }
+
+                setIsLoading(true)
+                // setMessage('')
+                
+                try {
+                    const response = await sendPasswordResetEmail(email)
+                    
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                    
+                    if (response.success) {
+                        const successMessage = '✅ A password reset link has been sent to your email address.'
+                        // setMessage(successMessage)
+                        toast.success(successMessage)
+                        setEmail('')
+                        // navigate('/')
+                    } else {
+                        toast.error(response.message || 'Failed to send reset link.')
+                    }
+                
+                } catch (error: any) {
+                    console.error('Password reset error:', error)
+                    toast.error(error.response?.data?.message || 'An error occurred. Please try again.')
+                } finally {
+                    setIsLoading(false)
+                }
+            }
+            
+            else {
                 const data = await login(email, password)
 
                 if (data.success) {
@@ -65,7 +89,7 @@ const Login: React.FC = () => {
         }
     }
 
-    const handleForgotPassword = () => {
+    const handleForgotPassword = async () => {
         setState('forgot-password')
     }
 
