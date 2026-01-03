@@ -57,15 +57,15 @@ A modern, full-stack car rental management system built with TypeScript, React, 
 
 | Login Page | Registration Page |
 |------------|-------------------|
-| ![Login](./screenshots/loging.png) | ![Register](./screenshots/registration-page.png) |
+| ![Login](./screenshots/login.png) | ![Register](./screenshots/register.png) |
 
 | Forgot Password | Reset Password Email |
 |-----------------|----------------------|
-| ![Forgot Password](./screenshots/forgot-password.png) | ![Email Form](./screenshots/reset-password-email.png) |
+| ![Forgot Password](./screenshots/forgetPassword.png) | ![Email Form](./screenshots/resetForm.png) |
 
 | Change Password Form |
 |---------------------|
-| ![Change Password](./screenshots/change-password-form.png) |
+| ![Change Password](./screenshots/changepassword.png) |
 
 </div>
 
@@ -75,11 +75,11 @@ A modern, full-stack car rental management system built with TypeScript, React, 
 
 | Home Page with Search | All Cars Catalog |
 |----------------------|------------------|
-| ![Homepage](./screenshots/homepage.png) | ![All Cars](./screenshots/all-cars.png) |
+| ![Homepage](./screenshots/home.png) | ![All Cars](./screenshots/allCars.png) |
 
 | User Bookings |
 |---------------|
-| ![Bookings](./screenshots/all-bookings.png) |
+| ![Bookings](./screenshots/allBookings.png) |
 
 </div>
 
@@ -89,11 +89,11 @@ A modern, full-stack car rental management system built with TypeScript, React, 
 
 | Owner Dashboard | Add New Car |
 |----------------|-------------|
-| ![Dashboard](./screenshots/owner-dashboard.png) | ![Add Car](./screenshots/add-car.png) |
+| ![Dashboard](./screenshots/ownerdashboard.png) | ![Add Car](./screenshots/addCar.png) |
 
 | Manage Cars | Manage Bookings |
 |-------------|-----------------|
-| ![Manage Cars](./screenshots/manage-cars.png) | ![Manage Bookings](./screenshots/manage-bookings.png) |
+| ![Manage Cars](./screenshots/manageCar.png) | ![Manage Bookings](./screenshots/manageBookings.png) |
 
 </div>
 
