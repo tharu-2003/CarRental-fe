@@ -5,7 +5,7 @@ import { useAppContext } from './context/AppContext';
 import Footer from './components/Footer';
 import Layout from './pages/owner/Layout';
 
-import  { lazy } from 'react'
+import  { lazy, Suspense } from 'react'
 
 
 const Home = lazy(() => import("./pages/Home"));
@@ -31,7 +31,7 @@ const App = () => {
       {!isOwnerPath && <Navbar />}
 
       {/* IMPORTANT: wrap lazy components */}
-      {/* <Suspense fallback={<h2 style={{textAlign:'center'}}>Loading...</h2>}> */}
+      <Suspense fallback={<h2 style={{textAlign:'center'}}>Loading...</h2>}>
         <Routes>
             <Route path='/' element={<Home />} />
             <Route path='/car-details/:id' element={<CarDetails />} />
@@ -45,7 +45,7 @@ const App = () => {
             </Route>
             <Route path='/reset-password/:token' element={<ResetPassword />} />
         </Routes>
-      {/* </Suspense> */}
+      </Suspense>
 
 
       {!isOwnerPath && <Footer /> }
