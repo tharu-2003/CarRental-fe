@@ -5,7 +5,7 @@ import { useAppContext } from './context/AppContext';
 import Footer from './components/Footer';
 import Layout from './pages/owner/Layout';
 
-import  { lazy, Suspense } from 'react'
+import  { lazy } from 'react'
 
 
 const Home = lazy(() => import("./pages/Home"));
